@@ -43,13 +43,22 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
 
-      - name: Create and push tag
+      # - name: Create and push tag
+      #   run: |
+      #     VERSION_TAG="build-$(date +'%Y%m%d-%H%M%S')"
+      #     git config --global user.email "github-actions@github.com"
+      #     git config --global user.name "GitHub Actions"
+      #     git tag $VERSION_TAG
+      #     git push origin $VERSION_TAG
+      - name: Create and push version tag
         run: |
-          VERSION_TAG="build-$(date +'%Y%m%d-%H%M%S')"
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION_TAG="v$VERSION"
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git tag $VERSION_TAG
           git push origin $VERSION_TAG
+
 
   deploydev:
     needs: tagversion
